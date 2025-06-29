@@ -11,11 +11,6 @@
   <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjFyYnhzM3JjZXhyMWFnbWg2dmI2MGxpMW5ndWx3YXM5YzBnZnpwMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9jWAWNhfyr3zkJi/giphy.gif" width="700"/>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/github/languages/top/drishyatomar2904/AstroGuardian" alt="Top Language">
-  <img src="https://img.shields.io/github/last-commit/drishyatomar2904/AstroGuardian" alt="Last Commit">
-</p>
-
 ---
 
 ## 🚀 Overview
