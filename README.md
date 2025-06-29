@@ -171,12 +171,8 @@
 > _“The cosmos is within us. We are made of star stuff.”_  
 > — Carl Sagan
 
-> **AstroGuardian** — Because the universe deserves a real-time dashboard. 🛰
+> **AstroGuardian** — Because the universe deserves a real-time system. 🛰
 
----
-
-✅ You can now copy-paste this entire README into your repo’s `README.md`.  
-Let me know if you'd like badges for deployment, Docker, or a banner image at the top.
 
 
 
