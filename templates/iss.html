@@ -1,0 +1,710 @@
+{% extends "base.html" %}
+
+{% block title %}ISS Tracker - Real-time Position{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h2 class="section-title gradient-text">🛰️ International Space Station Tracker</h2>
+  
+  <div class="row">
+    <!-- Current Position Card -->
+    <div class="col-lg-6 fade-in">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="gradient-text mb-0">Current Position</h3>
+          <div class="live-badge">
+            <span class="badge bg-danger pulse">LIVE</span>
+          </div>
+        </div>
+        
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="glass-card p-3 text-center h-100">
+              <i class="fas fa-globe-americas fa-2x mb-2 text-info"></i>
+              <h4 class="mb-1">Latitude</h4>
+              <h3 class="gradient-text">{{ iss_position.latitude }}°</h3>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="glass-card p-3 text-center h-100">
+              <i class="fas fa-globe-americas fa-2x mb-2 text-info"></i>
+              <h4 class="mb-1">Longitude</h4>
+              <h3 class="gradient-text">{{ iss_position.longitude }}°</h3>
+            </div>
+          </div>
+        </div>
+        
+        <div class="iss-stats">
+          <div class="d-flex justify-content-between mb-3">
+            <span><i class="fas fa-tachometer-alt me-2"></i>Velocity</span>
+            <span>{{ iss_position.velocity }} km/h</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span><i class="fas fa-ruler-combined me-2"></i>Altitude</span>
+            <span>{{ iss_position.altitude }} km</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span><i class="fas fa-sun me-2"></i>Visibility</span>
+            <span>{{ iss_position.visibility }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span><i class="fas fa-history me-2"></i>Last Updated</span>
+            <span>{{ iss_position.timestamp|format_datetime('%H:%M:%S UTC') }}</span>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <div class="glass-card p-3 text-center">
+            <i class="fas fa-sync-alt fa-2x mb-2 text-info"></i>
+            <p class="mb-1">Orbit Duration</p>
+            <h4 class="gradient-text">92 minutes</h4>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Real-time Earth View - YouTube Live Stream -->
+      <div class="glass-card mt-4 fade-in">
+        <h3 class="gradient-text text-center mb-3">Live Earth View from ISS</h3>
+        <div class="text-center">
+          <div class="ratio ratio-16x9">
+            <iframe 
+              src="https://www.youtube.com/embed/xRPjKQtRXR8?autoplay=1&mute=1" 
+              title="Live Earth View from ISS" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen
+              class="rounded">
+            </iframe>
+          </div>
+          <p class="mt-3">Live streaming video from the International Space Station</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Enhanced Next Pass Card -->
+    <div class="col-lg-6 fade-in">
+      <div class="glass-card h-100">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="gradient-text mb-0">Next Visible Pass</h3>
+          <div class="position-relative">
+            <i class="fas fa-map-marker-alt fa-2x text-warning"></i>
+            <span class="notification-badge">NEW</span>
+          </div>
+        </div>
+        
+        <div class="d-flex align-items-center mb-4">
+          <div class="me-3">
+            <i class="fas fa-binoculars fa-2x text-warning"></i>
+          </div>
+          <div>
+            <h4 class="mb-0">{{ next_pass.location }}</h4>
+            <p class="mb-0">Next visible pass</p>
+          </div>
+        </div>
+        
+        <!-- Pass Details Grid -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="glass-card p-3 text-center h-100">
+              <i class="far fa-calendar-alt fa-2x mb-2 text-primary"></i>
+              <h5 class="mb-1">Date</h5>
+              <h4 class="gradient-text">{{ next_pass.date }}</h4>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="glass-card p-3 text-center h-100">
+              <i class="far fa-clock fa-2x mb-2 text-primary"></i>
+              <h5 class="mb-1">Start Time</h5>
+              <h4 class="gradient-text">{{ next_pass.start_time }}</h4>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="glass-card p-3 text-center h-100">
+              <i class="fas fa-arrow-up fa-2x mb-2 text-warning"></i>
+              <h5 class="mb-1">Max Altitude</h5>
+              <h4 class="gradient-text">{{ next_pass.max_altitude }}</h4>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="glass-card p-3 text-center h-100">
+              <i class="fas fa-eye fa-2x mb-2 text-info"></i>
+              <h5 class="mb-1">Visibility</h5>
+              <h4 class="gradient-text">{{ next_pass.duration }}</h4>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Visibility Meter -->
+        <div class="glass-card mt-3 p-3">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Viewing Conditions</span>
+            <span>
+              {% if next_pass.max_altitude|replace('°','')|float > 60 %}
+                Excellent
+              {% elif next_pass.max_altitude|replace('°','')|float > 30 %}
+                Good
+              {% else %}
+                Fair
+              {% endif %}
+            </span>
+          </div>
+          <div class="progress" style="height: 10px;">
+            <div class="progress-bar 
+              {% if next_pass.max_altitude|replace('°','')|float > 60 %}
+                bg-success
+              {% elif next_pass.max_altitude|replace('°','')|float > 30 %}
+                bg-warning
+              {% else %}
+                bg-info
+              {% endif %}" 
+              role="progressbar" 
+              style="width: 
+                {% if next_pass.max_altitude|replace('°','')|float > 90 %}
+                  100
+                {% else %}
+                  {{ (next_pass.max_altitude|replace('°','')|float / 90) * 100 }}
+                {% endif %}%" 
+              aria-valuenow="{{ next_pass.max_altitude|replace('°','') }}" 
+              aria-valuemin="0" 
+              aria-valuemax="90">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-1">
+            <small>Poor</small>
+            <small>Excellent</small>
+          </div>
+        </div>
+        
+        <!-- Countdown to next pass -->
+        <div class="glass-card p-4 mt-3 text-center">
+          <h4 class="gradient-text mb-3">Next Pass In</h4>
+          <div id="countdown-timer" class="countdown-timer">
+            <div class="d-flex justify-content-center">
+              <div class="mx-2">
+                <span id="countdown-hours">03</span>
+                <span class="countdown-unit">HOURS</span>
+              </div>
+              <div class="mx-2">
+                <span id="countdown-minutes">22</span>
+                <span class="countdown-unit">MINUTES</span>
+              </div>
+              <div class="mx-2">
+                <span id="countdown-seconds">45</span>
+                <span class="countdown-unit">SECONDS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="mt-4 text-center">
+          <a href="https://worldview.earthdata.nasa.gov" 
+             target="_blank" 
+             class="btn btn-glow mb-3">
+            <i class="fas fa-map-marked-alt me-2"></i>View on NASA Map
+          </a>
+          <a href="https://www.youtube.com/live/xRPjKQtRXR8?si=-4jLouuirhcnM5UM" 
+             target="_blank" 
+             class="btn btn-glow">
+            <i class="fas fa-video me-2"></i>Live ISS Stream
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Real-time Orbit Visualization -->
+  <div class="glass-card mt-5 fade-in">
+    <h3 class="gradient-text text-center mb-4">Current Position & Orbit Path</h3>
+    <div class="text-center">
+      <div id="orbit-map" style="height: 400px; background: #1a1a2e; border-radius: 10px; position: relative;">
+        <div id="map-overlay" class="text-center p-4" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; flex-direction: column;">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading real-time orbit visualization...</p>
+        </div>
+        <canvas id="orbit-canvas" width="800" height="400" style="display: none;"></canvas>
+      </div>
+      <p class="mt-3">The ISS orbits Earth every 92 minutes at ~420 km altitude</p>
+    </div>
+  </div>
+  
+  <!-- Pass Prediction Tool -->
+  <div class="glass-card mt-4 fade-in">
+    <h3 class="gradient-text text-center mb-4">Find Passes for Your Location</h3>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <input type="text" id="location-input" class="form-control glass-input" placeholder="Enter city or address">
+      </div>
+      <div class="col-md-3 mb-3">
+        <button id="find-passes-btn" class="btn btn-glow w-100">
+          <i class="fas fa-search me-2"></i>Find Passes
+        </button>
+      </div>
+      <div class="col-md-3 mb-3">
+        <button id="detect-location-btn" class="btn btn-glow w-100">
+          <i class="fas fa-location-arrow me-2"></i>Use My Location
+        </button>
+      </div>
+    </div>
+    <div id="pass-results" class="mt-3" style="display: none;">
+      <!-- Results will be populated here -->
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<style>
+  /* Enhanced styles for Next Pass section */
+  .glass-card {
+    background: rgba(10, 25, 47, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 200, 255, 0.2);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(100, 200, 255, 0.4);
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff00e6;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    box-shadow: 0 0 10px #ff00e6;
+  }
+  
+  .countdown-timer {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+  }
+  
+  .countdown-unit {
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: block;
+    margin-top: 3px;
+    color: #00f7ff;
+  }
+  
+  /* Direction visualization */
+  .direction-visualization {
+    position: relative;
+    height: 150px;
+    margin: 0 auto;
+    max-width: 200px;
+  }
+  
+  .compass {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .compass-point {
+    position: absolute;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  
+  .compass-point:nth-child(1) { top: 5px; left: 50%; transform: translateX(-50%); } /* N */
+  .compass-point:nth-child(2) { top: 50%; right: 5px; transform: translateY(-50%); } /* E */
+  .compass-point:nth-child(3) { bottom: 5px; left: 50%; transform: translateX(-50%); } /* S */
+  .compass-point:nth-child(4) { top: 50%; left: 5px; transform: translateY(-50%); } /* W */
+  
+  .direction-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 40px solid #ff6b6b;
+    transform-origin: bottom center;
+    transform: translate(-50%, -50%) rotate(0deg);
+    z-index: 2;
+  }
+  
+  .direction-arrow::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -5px;
+    width: 10px;
+    height: 10px;
+    background: #ff6b6b;
+    border-radius: 50%;
+  }
+  
+  /* Enhanced progress bar */
+  .progress {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: visible;
+  }
+  
+  .progress-bar {
+    border-radius: 10px;
+    position: relative;
+    overflow: visible;
+  }
+  
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.7);
+  }
+  
+  /* Pulse animation */
+  .pulse {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  
+  .iss-stats div {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .iss-stats div:last-child {
+    border-bottom: none;
+  }
+  
+  #orbit-map {
+    position: relative;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  // Initialize orbit visualization
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get ISS position from template
+    const issPos = {
+      lat: {{ iss_position.latitude }},
+      lng: {{ iss_position.longitude }}
+    };
+    
+    // Create the visualization after a short delay
+    setTimeout(() => {
+      initOrbitVisualization(issPos);
+    }, 1000);
+    
+    // Set up pass prediction functionality
+    setupPassPrediction();
+    
+    // Set up direction visualization
+    setupDirectionVisualization();
+    
+    // Initialize countdown timer
+    initCountdownTimer();
+  });
+  
+  function initCountdownTimer() {
+    function updateCountdown() {
+      const hours = document.getElementById('countdown-hours');
+      const minutes = document.getElementById('countdown-minutes');
+      const seconds = document.getElementById('countdown-seconds');
+      
+      let h = parseInt(hours.textContent);
+      let m = parseInt(minutes.textContent);
+      let s = parseInt(seconds.textContent);
+      
+      s--;
+      
+      if (s < 0) {
+        s = 59;
+        m--;
+        
+        if (m < 0) {
+          m = 59;
+          h--;
+          
+          if (h < 0) {
+            // Reset timer
+            h = 3;
+            m = 22;
+            s = 45;
+          }
+        }
+      }
+      
+      hours.textContent = h.toString().padStart(2, '0');
+      minutes.textContent = m.toString().padStart(2, '0');
+      seconds.textContent = s.toString().padStart(2, '0');
+    }
+    
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+  }
+  
+  function setupDirectionVisualization() {
+    const directionArrows = document.querySelectorAll('.direction-arrow');
+    const directionMap = {
+      'N': 0,
+      'NE': 45,
+      'E': 90,
+      'SE': 135,
+      'S': 180,
+      'SW': 225,
+      'W': 270,
+      'NW': 315
+    };
+    
+    directionArrows.forEach(arrow => {
+      const direction = arrow.getAttribute('data-direction');
+      const angle = directionMap[direction] || 0;
+      arrow.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+    });
+  }
+  
+  function initOrbitVisualization(issPos) {
+    const canvas = document.getElementById('orbit-canvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('orbit-map');
+    const overlay = document.getElementById('map-overlay');
+    
+    // Set canvas size to match container
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+    canvas.style.display = 'block';
+    
+    // Hide loading overlay
+    overlay.style.display = 'none';
+    
+    // Draw Earth
+    function drawEarth() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const earthRadius = Math.min(canvas.width, canvas.height) * 0.3;
+      
+      // Draw Earth
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, earthRadius, 0, Math.PI * 2);
+      ctx.fillStyle = '#0d6efd';
+      ctx.fill();
+      
+      // Draw continents
+      ctx.beginPath();
+      ctx.arc(centerX - earthRadius * 0.3, centerY - earthRadius * 0.1, earthRadius * 0.2, 0, Math.PI * 2);
+      ctx.arc(centerX + earthRadius * 0.2, centerY - earthRadius * 0.3, earthRadius * 0.15, 0, Math.PI * 2);
+      ctx.fillStyle = '#198754';
+      ctx.fill();
+      
+      return { centerX, centerY, earthRadius };
+    }
+    
+    // Draw ISS position
+    function drawISS(earth, issPos) {
+      const { centerX, centerY, earthRadius } = earth;
+      const orbitRadius = earthRadius * 1.5;
+      
+      // Convert latitude/longitude to position on orbit
+      const angle = (issPos.lng / 180) * Math.PI;
+      const issX = centerX + Math.cos(angle) * orbitRadius;
+      const issY = centerY + Math.sin(angle) * (orbitRadius * 0.6);
+      
+      // Draw orbit path
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, orbitRadius, orbitRadius * 0.6, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Draw ISS
+      ctx.beginPath();
+      ctx.arc(issX, issY, 8, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.arc(issX, issY, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ff6b6b';
+      ctx.fill();
+      
+      // Draw direction indicator
+      ctx.beginPath();
+      ctx.moveTo(issX, issY);
+      ctx.lineTo(issX + 20, issY - 10);
+      ctx.strokeStyle = '#ffdd59';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    
+    // Draw the visualization
+    const earth = drawEarth();
+    drawISS(earth, issPos);
+    
+    // Add real-time update
+    setInterval(() => {
+      // Simulate ISS movement (in a real app, you'd fetch new position)
+      issPos.lng = (issPos.lng + 1) % 360;
+      
+      // Clear canvas and redraw
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const earth = drawEarth();
+      drawISS(earth, issPos);
+    }, 1000);
+  }
+  
+  function setupPassPrediction() {
+    const findPassesBtn = document.getElementById('find-passes-btn');
+    const detectLocationBtn = document.getElementById('detect-location-btn');
+    const locationInput = document.getElementById('location-input');
+    const resultsContainer = document.getElementById('pass-results');
+    
+    findPassesBtn.addEventListener('click', () => {
+      const location = locationInput.value.trim();
+      if (location) {
+        findPasses(location);
+      } else {
+        alert('Please enter a location');
+      }
+    });
+    
+    detectLocationBtn.addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            findPassesByCoords(lat, lng);
+          },
+          error => {
+            alert('Unable to get your location: ' + error.message);
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser');
+      }
+    });
+  }
+  
+  function findPasses(location) {
+    const resultsContainer = document.getElementById('pass-results');
+    resultsContainer.style.display = 'block';
+    resultsContainer.innerHTML = `
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Finding ISS passes for ${location}...</p>
+      </div>
+    `;
+    
+    // Simulate API call
+    setTimeout(() => {
+      // This would be replaced with actual API call in production
+      const passes = [
+        { date: 'Tomorrow', time: '05:42 AM', duration: '6 min', maxAlt: '78°', direction: 'SW to NE' },
+        { date: 'Tomorrow', time: '07:15 PM', duration: '5 min', maxAlt: '45°', direction: 'NW to SE' },
+        { date: '${(new Date().getDate() + 2)}/${new Date().getMonth() + 1}', time: '06:03 AM', duration: '7 min', maxAlt: '85°', direction: 'S to N' }
+      ];
+      
+      let html = '<div class="row">';
+      passes.forEach(passData => {
+        html += `
+          <div class="col-md-4 mb-3">
+            <div class="glass-card p-3">
+              <div class="d-flex justify-content-between">
+                <h5>${passData.date}</h5>
+                <span class="badge bg-primary">${passData.time}</span>
+              </div>
+              <div class="mt-2">
+                <div><i class="fas fa-arrow-up me-2"></i>Max: ${passData.maxAlt}</div>
+                <div><i class="fas fa-eye me-2"></i>Duration: ${passData.duration}</div>
+                <div><i class="fas fa-compass me-2"></i>${passData.direction}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      
+      resultsContainer.innerHTML = html;
+    }, 1500);
+  }
+  
+  function findPassesByCoords(lat, lng) {
+    const resultsContainer = document.getElementById('pass-results');
+    resultsContainer.style.display = 'block';
+    resultsContainer.innerHTML = `
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Finding ISS passes for your location...</p>
+      </div>
+    `;
+    
+    // Simulate API call
+    setTimeout(() => {
+      // This would be replaced with actual API call in production
+      const passes = [
+        { date: 'Tonight', time: '08:42 PM', duration: '5 min', maxAlt: '62°', direction: 'W to E' },
+        { date: 'Tomorrow', time: '04:15 AM', duration: '4 min', maxAlt: '32°', direction: 'NW to SE' },
+        { date: 'Tomorrow', time: '05:53 PM', duration: '6 min', maxAlt: '71°', direction: 'SW to NE' }
+      ];
+      
+      let html = '<div class="row">';
+      passes.forEach(passData => {
+        html += `
+          <div class="col-md-4 mb-3">
+            <div class="glass-card p-3">
+              <div class="d-flex justify-content-between">
+                <h5>${passData.date}</h5>
+                <span class="badge bg-primary">${passData.time}</span>
+              </div>
+              <div class="mt-2">
+                <div><i class="fas fa-arrow-up me-2"></i>Max: ${passData.maxAlt}</div>
+                <div><i class="fas fa-eye me-2"></i>Duration: ${passData.duration}</div>
+                <div><i class="fas fa-compass me-2"></i>${passData.direction}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      
+      resultsContainer.innerHTML = html;
+    }, 1500);
+  }
+</script>
+{% endblock %}

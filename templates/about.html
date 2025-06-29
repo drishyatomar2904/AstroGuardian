@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h2 class="section-title gradient-text">About AstroGuardian</h2>
+  
+  <div class="glass-card p-4 fade-in">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h3 class="gradient-text">Exploring the Cosmos</h3>
+        <p>AstroGuardian is a futuristic dashboard built for space enthusiasts, bringing you the latest from the cosmos using NASA APIs. Explore asteroids, track the ISS, and monitor solar activity — all in a stunning dark-themed interface.</p>
+        <p>Our mission is to make space data accessible and engaging for everyone. With real-time updates and beautiful visualizations, you can stay informed about what's happening in our solar system.</p>
+        <p>Designed and crafted by <strong>Drishya Tomar</strong> with passion for space and technology 🚀.</p>
+        
+        <div class="mt-4">
+          <a href="https://github.com/drishyatomar2904/AstroGuardian" class="btn btn-glow me-2">
+            <i class="fab fa-github me-2"></i>View Source Code
+          </a>
+          <a href="https://docs.google.com/document/d/1ac5GH_F574OGUXW5nEU6ki6Nt5r5H7yShhrMMrTUjQA/edit?usp=sharing" class="btn btn-glow">
+            <i class="fas fa-rocket me-2"></i>Learn More
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6 text-center">
+        <div class="glass-card p-4" style="border: 2px solid #9d50bb; border-radius: 20px;">
+          <div class="gradient-text" style="font-size: 5rem; line-height: 1;">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h4 class="mt-3">Space Data at Your Fingertips</h4>
+          <p class="mb-0">Real-time information from NASA's APIs</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-4 fade-in">
+      <div class="glass-card p-4 text-center h-100">
+        <i class="fas fa-code fa-3x gradient-text"></i>
+        <h3 class="mt-3">Built with Modern Tech</h3>
+        <p>Flask, Bootstrap 5, Chart.js, and NASA APIs power this dashboard.</p>
+      </div>
+    </div>
+    <div class="col-md-4 fade-in">
+      <div class="glass-card p-4 text-center h-100">
+        <i class="fas fa-satellite fa-3x gradient-text"></i>
+        <h3 class="mt-3">Real-Time Data</h3>
+        <p>Get up-to-date information about space events as they happen.</p>
+      </div>
+    </div>
+    <div class="col-md-4 fade-in">
+      <div class="glass-card p-4 text-center h-100">
+        <i class="fas fa-star fa-3x gradient-text"></i>
+        <h3 class="mt-3">Open Source</h3>
+        <p>This project is open source and available on GitHub.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

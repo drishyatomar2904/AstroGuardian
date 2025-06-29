@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block title %}Solar Flares{% endblock %}
+
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .flare-indicator {
+      padding: 15px;
+      border-radius: 15px;
+      background: rgba(30, 30, 60, 0.2);
+      transition: all 0.3s ease;
+      text-align: center;
+      height: 100%;
+    }
+    
+    .flare-indicator.active {
+      background: rgba(30, 60, 90, 0.4);
+      box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+    }
+    
+    .flare-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 0 auto 15px;
+    }
+    
+    .probability-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+    
+    .flare-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 3px solid;
+    }
+    
+    .flare-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(255, 100, 100, 0.3);
+    }
+    
+    .flare-card.X-class {
+      border-left-color: #ff3860;
+    }
+    
+    .flare-card.M-class {
+      border-left-color: #ffdd57;
+    }
+    
+    .flare-card.C-class {
+      border-left-color: #209cee;
+    }
+    
+    .flare-card.B-class {
+      border-left-color: #23d160;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h2 class="section-title gradient-text">🔥 Solar Flares & Space Weather</h2>
+  
+  <!-- Forecast Indicators -->
+  <div class="glass-card p-4 mb-4 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="gradient-text mb-0">Current Solar Forecast</h3>
+      <span class="badge bg-warning">Updated: {{ forecast.update_time|format_datetime('%Y-%m-%d %H:%M') }}</span>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-3 mb-3 mb-md-0">
+        <div class="flare-indicator {% if forecast.X %}active{% endif %}">
+          <div class="flare-icon bg-danger">
+            <i class="fas fa-radiation fa-2x"></i>
+          </div>
+          <h5>X-Class Flares</h5>
+          <span class="probability-badge bg-{% if forecast.X %}danger{% else %}secondary{% endif %}">
+            {% if forecast.X %}Likely{% else %}Unlikely{% endif %}
+          </span>
+        </div>
+      </div>
+      
+      <div class="col-md-3 mb-3 mb-md-0">
+        <div class="flare-indicator {% if forecast.M %}active{% endif %}">
+          <div class="flare-icon bg-warning">
+            <i class="fas fa-fire fa-2x"></i>
+          </div>
+          <h5>M-Class Flares</h5>
+          <span class="probability-badge bg-{% if forecast.M %}warning{% else %}secondary{% endif %}">
+            {% if forecast.M %}Likely{% else %}Unlikely{% endif %}
+          </span>
+        </div>
+      </div>
+      
+      <div class="col-md-3 mb-3 mb-md-0">
+        <div class="flare-indicator {% if forecast.C %}active{% endif %}">
+          <div class="flare-icon bg-info">
+            <i class="fas fa-bolt fa-2x"></i>
+          </div>
+          <h5>C-Class Flares</h5>
+          <span class="probability-badge bg-{% if forecast.C %}info{% else %}secondary{% endif %}">
+            {% if forecast.C %}Likely{% else %}Unlikely{% endif %}
+          </span>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="flare-indicator">
+          <div class="flare-icon bg-success">
+            <i class="fas fa-cloud-sun fa-2x"></i>
+          </div>
+          <h5>Space Weather</h5>
+          <span class="probability-badge bg-info">Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <!-- Recent Flares -->
+    <div class="col-lg-7 fade-in">
+      <div class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="gradient-text mb-0">Recent Solar Activity</h3>
+          <span class="badge bg-{% if flares and flares|length > 0 %}danger{% else %}success{% endif %}">
+            {% if flares and flares|length > 0 %}{{ flares|length }} Event(s){% else %}Quiet{% endif %}
+          </span>
+        </div>
+        
+        {% if flares and flares|length > 0 %}
+          <div class="flare-list">
+            {% for flare in flares %}
+            <div class="glass-card p-4 mb-3 fade-in flare-card {{ flare.classType[0] }}-class">
+              <div class="row align-items-center">
+                <div class="col-md-2 text-center mb-3 mb-md-0">
+                  <div class="flare-icon bg-{% if flare.classType[0] == 'X' %}danger{% elif flare.classType[0] == 'M' %}warning{% else %}info{% endif %}">
+                    <i class="fas fa-fire fa-2x"></i>
+                  </div>
+                  <div class="mt-2">
+                    <span class="badge bg-{% if flare.classType[0] == 'X' %}danger{% elif flare.classType[0] == 'M' %}warning{% else %}info{% endif %}">
+                      {{ flare.classType }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="col-md-7">
+                  <h5 class="mb-1">{{ flare.classType }} Class Solar Flare</h5>
+                  <p class="mb-1"><i class="far fa-clock me-2"></i>{{ flare.beginTime|format_datetime('%Y-%m-%d %H:%M UTC') }}</p>
+                  {% if flare.sourceLocation %}
+                  <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>{{ flare.sourceLocation }}</p>
+                  {% endif %}
+                </div>
+                
+                <div class="col-md-3 text-end">
+                  <span class="badge bg-dark">{{ flare.beginTime|format_datetime('%H:%M') }}</span>
+                  <div class="mt-2">
+                    <a href="#" class="btn btn-sm btn-glow">Details</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="glass-card p-4 text-center fade-in">
+            <div class="mb-4">
+              <i class="fas fa-sun fa-4x text-warning"></i>
+            </div>
+            <h3>Quiet Solar Activity</h3>
+            <p class="mb-0">No significant solar flare activity detected in the last 24 hours.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Solar Activity Charts -->
+    <div class="col-lg-5 fade-in">
+      <div class="glass-card mb-4">
+        <h3 class="gradient-text mb-4">Solar Flare Statistics</h3>
+        
+        <div class="row text-center mb-4">
+          <div class="col-3">
+            <div class="display-4 gradient-text">{{ flare_stats.X }}</div>
+            <p>X-Class</p>
+          </div>
+          <div class="col-3">
+            <div class="display-4 gradient-text">{{ flare_stats.M }}</div>
+            <p>M-Class</p>
+          </div>
+          <div class="col-3">
+            <div class="display-4 gradient-text">{{ flare_stats.C }}</div>
+            <p>C-Class</p>
+          </div>
+          <div class="col-3">
+            <div class="display-4 gradient-text">{{ flare_stats.B }}</div>
+            <p>B-Class</p>
+          </div>
+        </div>
+        
+        <div class="chart-container" style="height: 200px;">
+          <canvas id="flareClassChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="glass-card">
+        <h3 class="gradient-text mb-4">Solar Activity Forecast</h3>
+        
+        <div class="chart-container mb-4" style="height: 200px;">
+          <canvas id="solarActivityChart"></canvas>
+        </div>
+        
+        <div class="mt-4">
+          <div class="d-flex justify-content-between mb-2">
+            <span><i class="fas fa-radiation me-2"></i> X-Class Probability</span>
+            <span>{% if forecast.X %}High{% else %}Low{% endif %}</span>
+          </div>
+          <div class="progress mb-3" style="height: 10px;">
+            <div class="progress-bar bg-danger" style="width: {% if forecast.X %}60{% else %}15{% endif %}%"></div>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span><i class="fas fa-fire me-2"></i> M-Class Probability</span>
+            <span>{% if forecast.M %}High{% else %}Low{% endif %}</span>
+          </div>
+          <div class="progress mb-3" style="height: 10px;">
+            <div class="progress-bar bg-warning" style="width: {% if forecast.M %}50{% else %}20{% endif %}%"></div>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span><i class="fas fa-bolt me-2"></i> C-Class Probability</span>
+            <span>{% if forecast.C %}High{% else %}Low{% endif %}</span>
+          </div>
+          <div class="progress mb-3" style="height: 10px;">
+            <div class="progress-bar bg-info" style="width: {% if forecast.C %}70{% else %}30{% endif %}%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Additional Space Weather Info -->
+  <div class="glass-card mt-4 fade-in">
+    <div class="row">
+      <div class="col-md-8">
+        <h3 class="gradient-text">Solar Activity Impact</h3>
+        <p>Solar flares can affect Earth in several ways:</p>
+        <ul>
+          <li><strong>Radio Blackouts:</strong> X-class flares can cause complete high-frequency radio blackouts</li>
+          <li><strong>Radiation Storms:</strong> M-class and stronger flares can create radiation storms hazardous to astronauts</li>
+          <li><strong>Geomagnetic Storms:</strong> Coronal mass ejections can cause spectacular auroras and satellite disruptions</li>
+        </ul>
+        <a href="#" class="btn btn-glow mt-2">
+          <i class="fas fa-satellite me-2"></i>View Space Weather Alerts
+        </a>
+      </div>
+      <div class="col-md-4 text-center">
+        <img src="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_1024_0193.jpg" 
+             alt="Latest Solar Image" 
+             class="img-fluid rounded"
+             style="max-height: 200px;">
+        <p class="mt-2">Latest SDO Image (NASA)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Solar Activity Forecast Chart
+    const forecastCtx = document.getElementById('solarActivityChart').getContext('2d');
+    new Chart(forecastCtx, {
+      type: 'line',
+      data: {
+        labels: {{ forecast_dates | tojson | safe }},
+        datasets: [{
+          label: 'Solar Activity Index',
+          data: {{ forecast_values | tojson | safe }},
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.1)',
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: 'rgba(255, 99, 132, 1)',
+          pointRadius: 3,
+          pointHoverRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(20, 25, 45, 0.9)',
+            titleColor: '#fff',
+            bodyColor: '#e0e0ff',
+            borderColor: 'rgba(157, 80, 187, 0.5)',
+            borderWidth: 1
+          }
+        },
+        scales: {
+          x: {
+            ticks: { 
+              color: '#fff',
+              font: { family: "'Exo 2', sans-serif", size: 10 }
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+          },
+          y: {
+            min: 0,
+            max: 35,
+            ticks: { 
+              color: '#fff',
+              font: { family: "'Exo 2', sans-serif", size: 10 }
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+          }
+        }
+      }
+    });
+    
+    // Flare Class Distribution Chart
+    const classCtx = document.getElementById('flareClassChart').getContext('2d');
+    new Chart(classCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['X-Class', 'M-Class', 'C-Class', 'B-Class'],
+        datasets: [{
+          data: [
+            {{ flare_stats.X }},
+            {{ flare_stats.M }},
+            {{ flare_stats.C }},
+            {{ flare_stats.B }}
+          ],
+          backgroundColor: [
+            'rgba(255, 56, 96, 0.8)',
+            'rgba(255, 221, 87, 0.8)',
+            'rgba(32, 156, 238, 0.8)',
+            'rgba(35, 209, 96, 0.8)'
+          ],
+          borderColor: [
+            'rgba(255, 56, 96, 1)',
+            'rgba(255, 221, 87, 1)',
+            'rgba(32, 156, 238, 1)',
+            'rgba(35, 209, 96, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            labels: { color: '#fff', font: { family: "'Exo 2', sans-serif" } }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(20, 25, 45, 0.9)',
+            bodyColor: '#e0e0ff',
+            borderColor: 'rgba(157, 80, 187, 0.5)'
+          }
+        },
+        cutout: '60%'
+      }
+    });
+  });
+</script>
+{% endblock %}

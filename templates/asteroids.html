@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Asteroids{% endblock %}
+
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h2 class="section-title gradient-text">☄️ Near-Earth Asteroids on {{ today }}</h2>
+  
+  <div class="row">
+    <div class="col-lg-8 fade-in">
+      <div class="glass-card">
+        <div class="chart-container">
+          <canvas id="asteroidChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4 fade-in">
+      <div class="glass-card">
+        <h3 class="gradient-text">Closest Approach</h3>
+        <div class="d-flex align-items-center mb-4">
+          <div class="me-3">
+            <i class="fas fa-meteor fa-2x text-danger"></i>
+          </div>
+          <div>
+            <h4 class="mb-0">{{ closest_asteroid.name }}</h4>
+            <p class="mb-0">Diameter: {{ closest_asteroid.diameter }}</p>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Miss Distance</span>
+            <span>{{ closest_asteroid.distance }}</span>
+          </div>
+          <div class="progress" style="height: 10px;">
+            <div class="progress-bar bg-success" style="width: 15%"></div>
+          </div>
+          <small class="text-muted">(Lunar Distance: 1.0 LD)</small>
+        </div>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Velocity</span>
+            <span>{{ closest_asteroid.velocity }}</span>
+          </div>
+          <div class="progress" style="height: 10px;">
+            <div class="progress-bar bg-info" style="width: 45%"></div>
+          </div>
+        </div>
+        
+        <div class="alert {% if hazardous_count > 0 %}alert-danger{% else %}alert-success{% endif %} mt-4">
+          <i class="fas fa-info-circle me-2"></i>
+          <span>
+            {% if hazardous_count > 0 %}
+              {{ hazardous_count }} potentially hazardous asteroid{{ 's' if hazardous_count > 1 }} detected today
+            {% else %}
+              No potentially hazardous asteroids detected today
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('asteroidChart').getContext('2d');
+    const labels = {{ asteroid_names | tojson | safe }};
+    const distances = {{ asteroid_distances | tojson | safe }};
+    
+    // Generate colors based on distance
+    const colors = distances.map(distance => {
+      const ratio = Math.min(1, distance / 5000000);
+      const r = Math.floor(124 * ratio);
+      const g = Math.floor(77 * ratio);
+      const b = Math.floor(255 * (1 - ratio));
+      return `rgba(${r}, ${g}, ${b}, 0.7)`;
+    });
+    
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Miss Distance (km)',
+          data: distances,
+          backgroundColor: colors,
+          borderColor: 'rgba(124, 77, 255, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#fff',
+              font: {
+                family: "'Exo 2', sans-serif"
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(20, 25, 45, 0.9)',
+            titleColor: '#fff',
+            bodyColor: '#e0e0ff',
+            borderColor: 'rgba(157, 80, 187, 0.5)',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                return `Distance: ${context.parsed.y.toLocaleString()} km`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { 
+              color: '#fff',
+              font: {
+                family: "'Exo 2', sans-serif",
+                size: 12
+              }
+            },
+            grid: { 
+              color: 'rgba(255, 255, 255, 0.1)',
+              drawBorder: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { 
+              color: '#fff',
+              font: {
+                family: "'Exo 2', sans-serif",
+                size: 12
+              },
+              callback: function(value) {
+                return value.toLocaleString() + ' km';
+              }
+            },
+            grid: { 
+              color: 'rgba(255, 255, 255, 0.1)',
+              drawBorder: false
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

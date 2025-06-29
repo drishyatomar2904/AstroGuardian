@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero text-center">
+  <div class="container">
+    <h1 class="floating">🌌 Welcome to AstroGuardian</h1>
+    <p>Explore asteroids, solar flares, and more with an immersive galactic interface</p>
+    <a href="/asteroids" class="btn btn-glow mt-4">Explore Space Data <i class="fas fa-arrow-right ms-2"></i></a>
+  </div>
+</section>
+
+<section class="cards-section container mt-5">
+  <div class="row text-center">
+    <div class="col-md-4 fade-in">
+      <div class="glass-card dashboard-card">
+        <div>
+          <div class="card-icon"><i class="fas fa-meteor"></i></div>
+          <h3>☄️ Asteroids</h3>
+          <p>Track near-Earth objects updated in real-time from NASA’s API.</p>
+        </div>
+        <a href="/asteroids" class="btn btn-glow mt-3">View Asteroids</a>
+      </div>
+    </div>
+    
+    <div class="col-md-4 fade-in">
+      <div class="glass-card dashboard-card">
+        <div>
+          <div class="card-icon"><i class="fas fa-sun"></i></div>
+          <h3>🔥 Solar Flares</h3>
+          <p>Stay updated with solar activity using NASA’s DONKI data.</p>
+        </div>
+        <a href="/solar-flares" class="btn btn-glow mt-3">View Solar Activity</a>
+      </div>
+    </div>
+    
+    <div class="col-md-4 fade-in">
+      <div class="glass-card dashboard-card">
+        <div>
+          <div class="card-icon"><i class="fas fa-satellite"></i></div>
+          <h3>🛰️ ISS Tracker</h3>
+          <p>Follow the live location of the International Space Station.</p>
+        </div>
+        <a href="/iss" class="btn btn-glow mt-3">Track ISS</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if apod_url %}
+<section class="container mt-5">
+  <div class="glass-card fade-in">
+    <h2 class="gradient-text text-center mb-4">Astronomy Picture of the Day</h2>
+    <h3 class="text-center">{{ apod_title }}</h3>
+    <div class="text-center mt-4">
+      <img src="{{ apod_url }}" alt="NASA Astronomy Picture of the Day" class="img-fluid rounded" style="max-height: 500px; width: auto; max-width: 100%;">
+    </div>
+    {% if apod_explanation %}
+    <div class="mt-4 p-3" style="background: rgba(0, 0, 0, 0.2); border-radius: 15px;">
+      <p class="mb-0">{{ apod_explanation }}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+
