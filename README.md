@@ -11,7 +11,6 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/drishyatomar2904/AstroGuardian?color=blue" alt="License">
   <img src="https://img.shields.io/github/languages/top/drishyatomar2904/AstroGuardian" alt="Top Language">
   <img src="https://img.shields.io/github/last-commit/drishyatomar2904/AstroGuardian" alt="Last Commit">
 </p>
@@ -125,7 +124,7 @@
 
 ## 🧠 Why AstroGuardian?
 
-AstroGuardian is **not just a dashboard** — it’s an experience:
+AstroGuardian is an experience:
 
 - **For space lovers**: Follow space events as they unfold.
 - **For students & educators**: Learn about celestial threats, events, and phenomena.
