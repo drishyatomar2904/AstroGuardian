@@ -1,6 +1,7 @@
 <h1 align="center">
   🌌 AstroGuardian
 </h1>
+
 <p align="center">
   <strong>A real-time space intelligence dashboard powered by NASA, NOAA, and global space APIs.</strong><br>
   <em>Monitor the cosmos — from ISS tracking to solar flares — in one seamless platform.</em>
@@ -19,12 +20,14 @@
 
 ## 🚀 Overview
 
-**AstroGuardian** is a real-time web platform that visualizes live space data using modern design, space-themed UI, and multi-API integration. It brings you:
-- 🔴 Solar flare alerts
-- 🛰 Real-time ISS tracking
-- ☄️ Asteroid close approaches
-- 📸 NASA's APOD
-- 🌐 Space weather & Earth imagery
+**AstroGuardian** is a real-time, responsive web platform that displays live space intelligence. Designed with space-lovers, scientists, and developers in mind, it integrates multiple APIs to bring:
+
+- 🛰 ISS tracking & predictions  
+- ☄️ Asteroid proximity alerts  
+- 🔥 Solar flare activity (X/M/C/B-class)  
+- 📸 NASA's Astronomy Picture of the Day  
+- 🌍 Earth-facing solar imagery  
+- 🌐 Space weather forecasts
 
 ---
 
@@ -32,116 +35,131 @@
 
 | 🌐 Module | 🌟 Description |
 |----------|----------------|
-| 🛰️ **ISS Tracker** | Real-time ISS location, speed, altitude & next pass predictions |
-| ☄️ **Asteroid Monitor** | Near-Earth object alerts with hazard detection & velocity data |
-| ☀️ **Solar Flare Watch** | X/M/C/B-class flares, impact analysis, and forecast visualizations |
-| 📷 **NASA APOD** | Beautiful daily image from NASA with scientific captions |
-| 🧪 **Space Weather** | Planetary K-index, radiation storm forecasts, Earth-facing solar views |
+| 🛰️ **ISS Tracker** | Real-time position, speed, altitude & next pass visibility |
+| ☄️ **Asteroid Monitor** | NEOs, hazard detection, velocity, size & approach distance |
+| ☀️ **Solar Flare Watch** | Forecasts + real-time X/M/C-class events & visual stats |
+| 📷 **NASA APOD** | Daily featured space image with scientific explanation |
+| 🧪 **Space Weather** | Planetary K-index, geomagnetic storm alerts & solar radiation index |
 
 ---
 
 ## 📊 Data Visualization Highlights
 
-- 🔁 Real-time ISS orbit animation
-- 🌞 Live solar flare meters (by class)
-- 🌍 NASA EPIC Earth imagery feed
-- 📈 Forecast graphs using Chart.js
-- 🧠 Smart fallback & caching architecture
+- 🌌 Live ISS orbit and altitude meter  
+- 🔥 Flare intensity bar + class-wise distribution  
+- 🌎 SDO/NASA Earth imagery panel  
+- 📈 Chart.js forecasting for solar activity  
+- 🧠 Smart fallback & offline-ready JSON cache  
 
 ---
 
 ## 🔧 Tech Stack
 
-| Layer       | Stack / Tools |
-|-------------|----------------|
-| **Frontend**| HTML5, CSS3, Bootstrap 5, JS, Chart.js, Glassmorphism UI |
-| **Backend** | Python, Flask, Jinja2, Threaded API fetchers |
-| **Data**    | NASA, NOAA, WhereTheISS.at, Satellites.fly.dev, OpenNotify |
-| **UX**      | Scroll animations, dark theme, interactive visual layers |
+| Layer       | Tools Used |
+|-------------|------------|
+| **Frontend**| HTML5, Bootstrap 5, CSS3, JS, Chart.js, Animate.css |
+| **Backend** | Python (Flask), Jinja2, Threaded async API fetchers |
+| **Data**    | NASA APIs, NOAA SWPC, WhereTheISS.at, OpenNotify |
+| **UI/UX**   | Dark mode, glassmorphism, animated loaders, responsive design |
 
 ---
 
 ## 📡 API Sources
 
-### 🚀 NASA
+### 🚀 NASA APIs
 
 | API | Purpose | Endpoint |
 |-----|---------|----------|
-| **APOD** | Daily Astronomy Picture | `planetary/apod` |
-| **NEO WS** | Near-Earth Objects | `neo/rest/v1/feed` |
-| **DONKI** | Solar flares/events | `DONKI/FLR` |
-| **EPIC** | Earth imagery | `EPIC/api/natural` |
+| APOD | Astronomy Pic of the Day | `/planetary/apod` |
+| NEO Feed | Near-Earth Object stats | `/neo/rest/v1/feed` |
+| DONKI | Solar flare activity | `/DONKI/FLR` |
+| EPIC | Real-time Earth imagery | `/EPIC/api/natural` |
 
 ### 🛰 ISS Tracking
 
 | API | Purpose | Endpoint |
 |-----|---------|----------|
-| **WhereTheISS.at** | Real-time ISS Position | `/v1/satellites/25544` |
-| **Open-Notify** | ISS fallback | `/iss-now.json` |
-| **Satellites.fly.dev** | Next passes | `/passes/25544` |
+| WhereTheISS.at | ISS position tracking | `/v1/satellites/25544` |
+| Open-Notify | Fallback tracking | `/iss-now.json` |
+| Satellites.fly.dev | ISS pass predictions | `/passes/25544` |
 
 ### ☀️ NOAA Space Weather
 
 | Purpose | Endpoint |
 |---------|----------|
-| K-index | `wing-kp.json` |
 | Geomagnetic Forecast | `3-day-geomag-forecast.json` |
-| Solar Proton Storm | `solar-proton-event.json` |
+| Solar Proton Events | `solar-proton-event.json` |
+| X-ray Flares (7-day) | `xrays-7-day.json` |
 
 ---
 
 ## ⏱ Data Refresh Intervals
 
-| Data Source      | Frequency     | Real-Time? |
-|------------------|---------------|------------|
-| ISS Position     | Every 1–5 sec | ✅ Yes     |
-| NASA APOD        | Daily         | ⏳         |
-| Asteroid Feed    | Daily         | ⏳         |
-| Solar Flares     | 30–60 mins    | ⏱         |
-| Earth View       | ~1–2 hrs      | ⏱         |
+| Data Source        | Frequency     | Real-Time |
+|--------------------|---------------|-----------|
+| ISS Position       | Every 1–5 sec | ✅ Yes    |
+| NASA APOD          | Daily         | ⏳        |
+| Asteroid Feed      | Daily         | ⏳        |
+| Solar Flares       | Every 30–60m  | ⏱ Near RT |
+| EPIC Earth Imagery | Every 1–2 hrs | ⏱        |
 
 ---
 
+## 📸 Screenshots
+
+| Dashboard Overview | Real-Time ISS Tracker |
+|--------------------|------------------------|
+| ![]((https://github.com/user-attachments/assets/58cbccdc-4525-4d1e-b316-c22ea9a53f9b) | ![](assets/screenshots/2_iss_tracker.png) |
+
+| Solar Flare Visuals | Asteroid Monitoring |
+|----------------------|----------------------|
+| ![](assets/screenshots/3_solar_flare.png) | ![](assets/screenshots/4_asteroid_monitor.png) |
+
+| NASA APOD Viewer | Space Weather Analytics |
+|------------------|--------------------------|
+| ![](assets/screenshots/5_apod.png) | ![](assets/screenshots/6_space_weather.png) |
+
+---
+![Screenshot 2025-06-29 164630](https://github.com/user-attachments/assets/58cbccdc-4525-4d1e-b316-c22ea9a53f9b)
+
 ## 💡 Features in Action
 
-- 📌 Dynamic alert badges for X/M-class flares
-- 🌐 Location-aware ISS visibility estimation
-- 🎯 Hazardous object detection & alerts
-- 🎨 Responsive, immersive UI with glass cards
-- 🌐 Offline mode with fallback JSONs (coming soon)
+- 📌 Dynamic glow alerts for X/M-class flares  
+- 🎯 Hazardous asteroid detection + alert banners  
+- 🌐 ISS visibility based on your current location  
+- 🎨 Interactive UI with real-time cards & visual pulses  
+- 🔁 Progressive fallback mechanism with offline-ready JSON  
 
 ---
 
 ## 🛣️ Roadmap
 
-- [ ] 🌍 Add WebSocket ISS live path animation  
-- [ ] 📧 Email alerts for solar flares & NEOs  
-- [ ] 📊 Historical graphing of flare events  
-- [ ] 🔓 User login to save favorite locations  
-- [ ] 🌐 Multi-language localization  
+- [ ] 🌍 WebSocket ISS orbit path visualization  
+- [ ] 📧 Email alerts for flares/NEO encounters  
+- [ ] 📊 Historical flare graphing + time filters  
+- [ ] 🌐 Multilingual UI (EN, HI, FR, etc.)  
+- [ ] 🔓 User login & location bookmarks  
 
 ---
 
-## 🧠 Why AstroGuardian?
-
-AstroGuardian is an experience:
-
-- **For space lovers**: Follow space events as they unfold.
-- **For students & educators**: Learn about celestial threats, events, and phenomena.
-- **For developers**: Explore a modular Flask-based API integration stack.
-
----
-
-## 🧑‍💻 Author
+## 🧑‍💻 Developed By
 
 **Drishya Tomar**  
-📎 GitHub: [@drishyatomar2904](https://github.com/drishyatomar2904)  
+🔗 [GitHub Profile](https://github.com/drishyatomar2904)
+
+---
 
 ## 🌌 Final Thought
 
-> _"The cosmos is within us. We are made of star stuff. We are a way for the universe to know itself."_  
+> _“The cosmos is within us. We are made of star stuff.”_  
 > — Carl Sagan
 
-> **AstroGuardian** — because the universe deserves a real-time dashboard.
+> **AstroGuardian** — Because the universe deserves a real-time dashboard. 🛰
+
+---
+
+✅ You can now copy-paste this entire README into your repo’s `README.md`.  
+Let me know if you'd like badges for deployment, Docker, or a banner image at the top.
+
 
 
