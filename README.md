@@ -7,6 +7,10 @@
 </p>
 
 <p align="center">
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExczQzZ2R1NHBtdDVrbXFtaDJhaGUwY2VmMmF2bWIzb3NpMDNwMGJnbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7buijTqhjxjbEqjK/giphy.gif" width="700"/>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/license/drishyatomar2904/AstroGuardian?color=blue" alt="License">
   <img src="https://img.shields.io/github/languages/top/drishyatomar2904/AstroGuardian" alt="Top Language">
   <img src="https://img.shields.io/github/last-commit/drishyatomar2904/AstroGuardian" alt="Last Commit">
