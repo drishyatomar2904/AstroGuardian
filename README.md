@@ -107,20 +107,37 @@
 
 ## 📸 Screenshots
 
-| Dashboard Overview | Real-Time ISS Tracker |
-|--------------------|------------------------|
-| ![]((https://github.com/user-attachments/assets/58cbccdc-4525-4d1e-b316-c22ea9a53f9b) | ![](assets/screenshots/2_iss_tracker.png) |
+<table>
+  <tr>
+    <td align="center"><strong>Dashboard Overview</strong></td>
+    <td align="center"><strong>Real-Time ISS Tracker</strong></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/58cbccdc-4525-4d1e-b316-c22ea9a53f9b" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e224c145-8ea3-4492-bd9c-ca127aba5ef6" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Solar Flare Visuals</strong></td>
+    <td align="center"><strong>Asteroid Monitoring</strong></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/ddc562d7-749e-4bff-ade6-a3a3bc460b83"/></td>
+    <td><img src="https://github.com/user-attachments/assets/2848ef82-f42c-4cc5-9451-5da614bacece" width="100%"/></td>
+  </tr>
 
-| Solar Flare Visuals | Asteroid Monitoring |
-|----------------------|----------------------|
-| ![](assets/screenshots/3_solar_flare.png) | ![](assets/screenshots/4_asteroid_monitor.png) |
 
-| NASA APOD Viewer | Space Weather Analytics |
-|------------------|--------------------------|
-| ![](assets/screenshots/5_apod.png) | ![](assets/screenshots/6_space_weather.png) |
 
----
-![Screenshot 2025-06-29 164630](https://github.com/user-attachments/assets/58cbccdc-4525-4d1e-b316-c22ea9a53f9b)
+
+  <tr>
+    <td align="center"><strong>NASA APOD Viewer</strong></td>
+    <td align="center"><strong>Space Weather Analytics</strong></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/646863ee-e2f2-476c-88fd-f38a23c0b1e9" width="100%"/></td>
+    <td><img src="https://github.com/user-attachments/assets/eb6c9181-9cfd-44bb-94db-b84f7861a14e" width="100%"/></td>
+  </tr>
+</table>
+
 
 ## 💡 Features in Action
 
